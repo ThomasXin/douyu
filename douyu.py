@@ -6,7 +6,7 @@ from selenium import webdriver
 """
     作用：爬取斗鱼直播所有直播间的直播类型以及直播间观看人数
 """
-# 连接数据库
+# 连接Mongodb数据库
 host = '127.0.0.1'
 port = 27017
 dbname = 'Douyu'
@@ -16,9 +16,10 @@ mydb = client[dbname]
 mysheet = mydb[sheetname]
 
 def start_parse():
-
+    # 打开浏览器
     driver = webdriver.PhantomJS()
     url = 'https://www.douyu.com/directory/all'
+    # 发送请求
     driver.get(url)
     # 创建set集合，用于Id的去重
     ids = set()
