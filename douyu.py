@@ -23,6 +23,7 @@ def start_parse():
     driver.get(url)
     # 创建set集合，用于Id的去重
     ids = set()
+    # 计数
     num = 0
     while True:
         # 获取页面的源码
