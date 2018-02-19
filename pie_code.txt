@@ -1,0 +1,47 @@
+1.导入模块
+import pymongo
+import charts
+2.连接数据库
+client = pymongo.MongoClient('localhost',27017)
+dbname = 'Douyu'
+sheetname= '20180218douyu'
+mydb = client[dbname]
+mysheet = mydb[sheetname]
+3.查找多少种直播类型
+type_list = []
+for i in mysheet.find():
+    type_list.append(i['type'])
+type_index = list(set(type_list))
+4.计算每种类型的直播有多少人观看
+post_numbers = []
+for i in type_index:
+    num = 0
+    for each in mysheet.find({'type':i},{'number':1,'type':1}):
+        if each['type'] == i:
+            num += float(each['number'])
+    post_numbers.append(num)
+5.创建生成特殊数据的方法
+def data_gen():
+    length = 0
+    if length <= len(type_index):
+        for typed, num in zip(type_index,post_numbers):
+            data = [
+                typed,num
+            ]
+            yield data
+            length += 1
+6.调用charts
+options = {
+    'chart': {'zoomType':'xy'},
+    'title': {'text':'观看人数统计'},
+    'subtitle': {'text':'可视化统计图表'},
+}
+series = [{
+    'type': 'pie',
+    'name': 'pie charts',
+    'data': [i for i in data_gen()]
+}] 
+charts.plot(series,options=options,show='inline')
+7.效果
+
+
